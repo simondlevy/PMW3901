@@ -1,7 +1,7 @@
-#include "Bitcraze_PMW3901.h"
+#include "PMW3901.h"
 
 // Using digital pin 10 for chip select
-Bitcraze_PMW3901 flow(10);
+PMW3901 flow(10);
 
 void setup() {
   Serial.begin(9600);

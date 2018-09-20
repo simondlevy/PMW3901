@@ -20,15 +20,15 @@
  * SOFTWARE.
  */
 
-#include "Bitcraze_PMW3901.h"
+#include "PMW3901.h"
 
-Bitcraze_PMW3901::Bitcraze_PMW3901(uint8_t cspin, SPIClass * spi)
+PMW3901::PMW3901(uint8_t cspin, SPIClass * spi)
 { 
     _cspin = cspin;
     _spi = spi;
 }
 
-boolean Bitcraze_PMW3901::begin(void) {
+boolean PMW3901::begin(void) {
   // Setup SPI port
   _spi->begin();
   pinMode(_cspin, OUTPUT);
@@ -69,7 +69,7 @@ boolean Bitcraze_PMW3901::begin(void) {
 
 // Functional access
 
-void Bitcraze_PMW3901::readMotionCount(int16_t *deltaX, int16_t *deltaY)
+void PMW3901::readMotionCount(int16_t *deltaX, int16_t *deltaY)
 {
   registerRead(0x02);
   *deltaX = ((int16_t)registerRead(0x04) << 8) | registerRead(0x03);
@@ -77,7 +77,7 @@ void Bitcraze_PMW3901::readMotionCount(int16_t *deltaX, int16_t *deltaY)
 }
 
 // Low level register access
-void Bitcraze_PMW3901::registerWrite(uint8_t reg, uint8_t value) {
+void PMW3901::registerWrite(uint8_t reg, uint8_t value) {
   reg |= 0x80u;
 
   _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
@@ -96,7 +96,7 @@ void Bitcraze_PMW3901::registerWrite(uint8_t reg, uint8_t value) {
   delayMicroseconds(200);
 }
 
-uint8_t Bitcraze_PMW3901::registerRead(uint8_t reg) {
+uint8_t PMW3901::registerRead(uint8_t reg) {
   reg &= ~0x80u;
 
   _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
@@ -119,7 +119,7 @@ uint8_t Bitcraze_PMW3901::registerRead(uint8_t reg) {
 }
 
 // Performance optimisation registers
-void Bitcraze_PMW3901::initRegisters()
+void PMW3901::initRegisters()
 {
   registerWrite(0x7F, 0x00);
   registerWrite(0x61, 0xAD);

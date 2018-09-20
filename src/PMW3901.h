@@ -25,11 +25,11 @@
 #include <stdint.h>
 #include <SPI.h>
 
-class Bitcraze_PMW3901 {
+class PMW3901 {
 
 public:
 
-  Bitcraze_PMW3901(uint8_t cspin, SPIClass * spi = &SPI);
+  PMW3901(uint8_t cspin, SPIClass * spi = &SPI);
 
   bool begin(void);
 

@@ -1,5 +1,9 @@
 /* flow.ino PMW3901_SoftSPI optical flow example
  *
+ * Additional library required: 
+ *
+ *     https://github.com/greiman/DigitalIO) library
+ *
  * Copyright (c) 2017 Bitcraze AB, Simon D. Levy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
