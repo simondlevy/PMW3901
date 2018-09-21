@@ -1,6 +1,6 @@
 #include "PMW3901.h"
 
-// Using digital pin 10 for chip select
+// Using pin A4 for chip select, SPI1 for SPI bus
 PMW3901 flow(A4, &SPI1);
 
 void setup() {
