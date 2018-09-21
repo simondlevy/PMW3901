@@ -1,7 +1,7 @@
 #include "PMW3901.h"
 
 // Using digital pin 10 for chip select
-PMW3901 flow(A3, &SPI1);
+PMW3901 flow(A4, &SPI1);
 
 void setup() {
   Serial.begin(9600);
