@@ -3,26 +3,33 @@
 // Using digital pin 10 for chip select
 PMW3901 flow(10);
 
-void setup() {
-  Serial.begin(9600);
+void setup() 
+{
+    Serial.begin(115200);
 
-  if (!flow.begin()) {
-    Serial.println("Initialization of the flow sensor failed");
-    while(1) { }
-  }
+    if (!flow.begin()) {
+
+
+        while(true) { 
+            Serial.println("Initialization of the flow sensor failed");
+            delay(500);
+        }
+    }
 }
 
-int16_t deltaX,deltaY;
+void loop() 
+{
+    int16_t deltaX = 0;
+    int16_t deltaY = 0;
 
-void loop() {
-  // Get motion count since last call
-  flow.readMotionCount(&deltaX, &deltaY);
+    // Get motion count since last call
+    //flow.readMotionCount(&deltaX, &deltaY);
 
-  Serial.print("X: ");
-  Serial.print(deltaX);
-  Serial.print(", Y: ");
-  Serial.print(deltaY);
-  Serial.print("\n");
+    Serial.print("X: ");
+    Serial.print(deltaX);
+    Serial.print(", Y: ");
+    Serial.print(deltaY);
+    Serial.print("\n");
 
-  delay(100);
+    delay(100);
 }
