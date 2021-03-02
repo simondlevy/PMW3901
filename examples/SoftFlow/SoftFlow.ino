@@ -1,4 +1,4 @@
-/* flow.ino PMW3901_SoftSPI optical flow example
+/* SoftFlow.ino PMW3901_SoftSPI optical flow example
  *
  * Additional library required: 
  *
