@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-#include "PMW3901.h"
+#include "PMW3901.hpp"
 
 PMW3901::PMW3901(uint8_t cspin, SPIClass * spi)
 { 

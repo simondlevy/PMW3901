@@ -1,4 +1,4 @@
-#include "PMW3901.h"
+#include "PMW3901.hpp"
 
 // Using digital pin 10 for chip select
 static PMW3901 flow(10);
