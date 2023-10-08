@@ -2,3 +2,5 @@
 
 This library is based on on the [Bitcraze_PMW3901](https://github.com/bitcraze/Bitcraze_PMW3901)
 library, q.v. for details.  I made the following modifications:
+
+1. Code is header-only
