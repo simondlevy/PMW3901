@@ -1,13 +1,15 @@
-#include "PMW3901.h"
+#include "pmw3901.hpp"
 
 // Using digital pin 10 for chip select
-static PMW3901 flow(10);
+static PMW3901 sensor(10);
+
+static PMW3901::motionBurst_t motion;
 
 void setup() 
 {
     Serial.begin(115200);
 
-    if (!flow.begin()) {
+    if (!sensor.begin()) {
 
         while(true) { 
             Serial.println("Initialization of the flow sensor failed");
@@ -18,16 +20,13 @@ void setup()
 
 void loop() 
 {
-    int16_t deltaX = 0;
-    int16_t deltaY = 0;
 
-    // Get motion count since last call
-    flow.readMotionCount(&deltaX, &deltaY);
+    sensor.readMotion(&motion); 
 
     Serial.print("X: ");
-    Serial.print(deltaX);
+    Serial.print(motion.deltaX);
     Serial.print(", Y: ");
-    Serial.print(deltaY);
+    Serial.print(motion.deltaY);
     Serial.print("\n");
 
     delay(100);
