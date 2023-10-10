@@ -3,7 +3,7 @@
 // Using digital pin 10 for chip select
 static PMW3901_Arduino sensor(10);
 
-static PMW3901_Arduino::motionBurst_t motion;
+static PMW3901::motionBurst_t motion;
 
 void setup() 
 {
