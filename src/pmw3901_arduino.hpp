@@ -140,7 +140,7 @@ class PMW3901_Arduino : public PMW3901 {
             delayMicroseconds(50);
             PMW3901::spi_transfer(reg);
             delayMicroseconds(50);
-            uint8_t value = _spi->transfer(0);
+            uint8_t value = PMW3901::spi_transfer(0);
             delayMicroseconds(200);
 
             digitalWrite(_cspin, HIGH);
