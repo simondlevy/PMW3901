@@ -1,12 +1,14 @@
 #pragma once
 
-class PMW3901 {
+#include <new.hpp>
+
+class PMW3901 : public NewPMW3901 {
 
     public:
 
-        bool begin(const uint8_t csPin)
+        virtual bool begin(const uint8_t csPin)
         {
-            _cspin = csPin;
+            NewPMW3901::begin(csPin);
 
             // Setup SPI port
             spi_begin();
@@ -48,7 +50,7 @@ class PMW3901 {
             return true;
         }
 
-        void readMotion(int16_t * deltaX, int16_t * deltaY, bool * gotMotion)
+        virtual void readMotion(int16_t * deltaX, int16_t * deltaY, bool * gotMotion)
         {
             uint8_t address = 0x16;
 
@@ -83,13 +85,9 @@ class PMW3901 {
 
         virtual void spi_end_transaction(void) = 0;
 
-        virtual void spi_transfer(void * data, size_t size);
+        virtual void spi_transfer(void * data, size_t size) = 0;
 
-    private:
-
-        uint8_t _cspin;
-
-        void registerWrite(uint8_t reg, uint8_t value)
+        virtual void registerWrite(uint8_t reg, uint8_t value)
         {
             reg |= 0x80u;
 
@@ -111,7 +109,7 @@ class PMW3901 {
             delayMicroseconds(200);
         }
 
-        uint8_t registerRead(uint8_t reg) {
+        virtual uint8_t registerRead(uint8_t reg) {
 
             reg &= ~0x80u;
 
@@ -134,14 +132,14 @@ class PMW3901 {
             return value;
         }
 
-        uint8_t spi_transfer(uint8_t data)
+        virtual uint8_t spi_transfer(uint8_t data)
         {
             spi_transfer(&data, 1);
 
             return data;
         }
 
-        void initRegisters(void)
+        virtual void initRegisters(void)
         {
             registerWrite(0x7F, 0x00);
             registerWrite(0x61, 0xAD);
