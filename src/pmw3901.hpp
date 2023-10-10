@@ -1,47 +1,21 @@
-/* PMW3901 Arduino driver
- * Copyright (c) 2017 Bitcraze AB
- * Copyright (c) 2023 Simon D. Levy
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 #pragma once
 
-#include <stdint.h>
-#include <SPI.h>
+#include <new.hpp>
 
-class PMW3901 {
+class PMW3901 : public NewPMW3901 {
 
     public:
 
-        PMW3901(uint8_t cspin, SPIClass * spi = &SPI)
+        virtual bool begin(const uint8_t csPin)
         {
-            _cspin = cspin;
-            _spi = spi;
-        }
+            NewPMW3901::begin(csPin);
 
-        bool begin(void)
-        {
             // Setup SPI port
-            _spi->begin();
+            spi_begin();
+
             pinMode(_cspin, OUTPUT);
-            _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+
+            spi_begin_transaction();
 
             // Make sure the SPI bus is reset
             digitalWrite(_cspin, HIGH);
@@ -51,7 +25,7 @@ class PMW3901 {
             digitalWrite(_cspin, HIGH);
             delay(1);
 
-            _spi->endTransaction();
+            spi_end_transaction();
 
             // Power on reset
             registerWrite(0x3A, 0x5A);
@@ -76,63 +50,96 @@ class PMW3901 {
             return true;
         }
 
-        void readMotionCount(int16_t *deltaX, int16_t *deltaY)
+        virtual void readMotion(int16_t * deltaX, int16_t * deltaY, bool * gotMotion)
         {
-            registerRead(0x02);
-            *deltaX = ((int16_t)registerRead(0x04) << 8) | registerRead(0x03);
-            *deltaY = ((int16_t)registerRead(0x06) << 8) | registerRead(0x05);
+            uint8_t address = 0x16;
+
+            spi_begin_transaction();
+
+            digitalWrite(_cspin,LOW);
+            delayMicroseconds(50);
+
+            spi_transfer(&address, 1);
+
+            delayMicroseconds(50);
+
+            spi_transfer(&_motion_burst, sizeof(motionBurst_t));
+
+            delayMicroseconds(50);
+            digitalWrite(_cspin, HIGH);
+
+            spi_end_transaction();
+
+            delayMicroseconds(50);
+
+            *deltaX = _motion_burst.deltaX;
+            *deltaY = _motion_burst.deltaY;
+            *gotMotion = (_motion_burst.motion == 0xB0);
         }
 
-    private:
+    protected:
 
-        SPIClass * _spi;
+        virtual void spi_begin(void) = 0;
 
-        uint8_t _cspin;
+        virtual void spi_begin_transaction(void) = 0;
 
-        // Low level register access
-        void registerWrite(uint8_t reg, uint8_t value) {
+        virtual void spi_end_transaction(void) = 0;
+
+        virtual void spi_transfer(void * data, size_t size) = 0;
+
+        virtual void registerWrite(uint8_t reg, uint8_t value)
+        {
             reg |= 0x80u;
 
-            _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+            spi_begin_transaction();
 
             digitalWrite(_cspin, LOW);
 
             delayMicroseconds(50);
-            _spi->transfer(reg);
-            _spi->transfer(value);
+
+            spi_transfer(reg);
+            spi_transfer(value);
+
             delayMicroseconds(50);
 
             digitalWrite(_cspin, HIGH);
 
-            _spi->endTransaction();
+            spi_end_transaction();
 
             delayMicroseconds(200);
         }
 
-        uint8_t registerRead(uint8_t reg) {
+        virtual uint8_t registerRead(uint8_t reg) {
+
             reg &= ~0x80u;
 
-            _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+            spi_begin_transaction();
 
             digitalWrite(_cspin, LOW);
 
             delayMicroseconds(50);
-            _spi->transfer(reg);
+            spi_transfer(reg);
             delayMicroseconds(50);
-            uint8_t value = _spi->transfer(0);
+            uint8_t value = spi_transfer(0);
             delayMicroseconds(200);
 
             digitalWrite(_cspin, HIGH);
 
             delayMicroseconds(200);
 
-            _spi->endTransaction();
+            spi_end_transaction();
 
             return value;
         }
 
-        // Performance optimisation registers
-        void initRegisters()
+        virtual uint8_t spi_transfer(uint8_t data)
+        {
+            spi_transfer(&data, 1);
+
+            return data;
+        }
+
+        virtual void initRegisters(void)
         {
             registerWrite(0x7F, 0x00);
             registerWrite(0x61, 0xAD);
@@ -176,11 +183,11 @@ class PMW3901 {
             registerWrite(0x64, 0xFF);
             registerWrite(0x65, 0x1F);
             registerWrite(0x7F, 0x14);
-            registerWrite(0x65, 0x60);
+            registerWrite(0x65, 0x67);
             registerWrite(0x66, 0x08);
-            registerWrite(0x63, 0x78);
+            registerWrite(0x63, 0x70);
             registerWrite(0x7F, 0x15);
-            registerWrite(0x48, 0x58);
+            registerWrite(0x48, 0x48);
             registerWrite(0x7F, 0x07);
             registerWrite(0x41, 0x0D);
             registerWrite(0x43, 0x14);
@@ -194,20 +201,40 @@ class PMW3901 {
             registerWrite(0x40, 0x41);
             registerWrite(0x70, 0x00);
 
-            delay(100);
+            delay(10); // delay 10ms
+
             registerWrite(0x32, 0x44);
             registerWrite(0x7F, 0x07);
             registerWrite(0x40, 0x40);
             registerWrite(0x7F, 0x06);
-            registerWrite(0x62, 0xf0);
+            registerWrite(0x62, 0xF0);
             registerWrite(0x63, 0x00);
             registerWrite(0x7F, 0x0D);
             registerWrite(0x48, 0xC0);
-            registerWrite(0x6F, 0xd5);
+            registerWrite(0x6F, 0xD5);
             registerWrite(0x7F, 0x00);
-            registerWrite(0x5B, 0xa0);
+            registerWrite(0x5B, 0xA0);
             registerWrite(0x4E, 0xA8);
             registerWrite(0x5A, 0x50);
             registerWrite(0x40, 0x80);
+
+            registerWrite(0x7F, 0x00);
+            registerWrite(0x5A, 0x10);
+            registerWrite(0x54, 0x00);
         }
+
+     private:
+
+        typedef struct motionBurst_s {
+
+            uint8_t motion;
+
+            uint8_t observation;
+
+            int16_t deltaX;
+            int16_t deltaY;
+
+        } __attribute__((packed)) motionBurst_t;
+
+        motionBurst_t _motion_burst;
 };
