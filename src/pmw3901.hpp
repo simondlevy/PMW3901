@@ -15,7 +15,49 @@ class PMW3901 {
 
         } __attribute__((packed)) motionBurst_t;
 
-    protected:
+        bool begin(void)
+        {
+            // Setup SPI port
+            spi_begin();
+
+            pinMode(_cspin, OUTPUT);
+
+            spi_begin_transaction();
+
+            // Make sure the SPI bus is reset
+            digitalWrite(_cspin, HIGH);
+            delay(1);
+            digitalWrite(_cspin, LOW);
+            delay(1);
+            digitalWrite(_cspin, HIGH);
+            delay(1);
+
+            spi_end_transaction();
+
+            // Power on reset
+            registerWrite(0x3A, 0x5A);
+            delay(5);
+
+            // Test the SPI communication, checking chipId and inverse chipId
+            uint8_t chipId = registerRead(0x00);
+            uint8_t dIpihc = registerRead(0x5F);
+
+            if (chipId != 0x49 && dIpihc != 0xB8) return false;
+
+            // Reading the motion registers one time
+            registerRead(0x02);
+            registerRead(0x03);
+            registerRead(0x04);
+            registerRead(0x05);
+            registerRead(0x06);
+            delay(1);
+
+            initRegisters();
+
+            return true;
+        }
+
+     protected:
 
         uint8_t _cspin;
 
