@@ -11,8 +11,10 @@ class PMW3901 {
         {
             _cspin = csPin;
 
+#if defined(ARDUINO)
             SPI.begin();
-
+#else
+#endif
             pinMode(_cspin, OUTPUT);
 
             digitalWrite(_cspin, HIGH);
@@ -49,23 +51,35 @@ class PMW3901 {
         {
             uint8_t address = 0x16;
 
+#if defined(ARDUINO)
             SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+#else
+#endif
 
             digitalWrite(_cspin,LOW);
             delayMicroseconds(50);
 
+#if defined(ARDUINO)
             SPI.transfer(&address, 1);
+#else
+#endif
 
             delayMicroseconds(50);
 
+#if defined(ARDUINO)
             SPI.transfer(&_motion_burst, 
                     sizeof(motionBurst_t));
+#else
+#endif
 
             delayMicroseconds(50);
             digitalWrite(_cspin, HIGH);
 
+#if defined(ARDUINO)
             SPI.endTransaction();
 
+#else
+#endif
             delayMicroseconds(50);
 
             *deltaX = _motion_burst.deltaX;
@@ -94,21 +108,30 @@ class PMW3901 {
         {
             reg |= 0x80u;
 
+#if defined(ARDUINO)
             SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+#else
+#endif
 
             digitalWrite(_cspin, LOW);
 
             delayMicroseconds(50);
 
+#if defined(ARDUINO)
             SPI.transfer(&reg, 1);
             SPI.transfer(&value, 1);
+#else
+#endif
 
 
             delayMicroseconds(50);
 
             digitalWrite(_cspin, HIGH);
 
+#if defined(ARDUINO)
             SPI.endTransaction();
+#else
+#endif
 
             delayMicroseconds(200);
         }
@@ -117,24 +140,36 @@ class PMW3901 {
 
             reg &= ~0x80u;
 
+#if defined(ARDUINO)
             SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+#else
+#endif
 
             digitalWrite(_cspin, LOW);
 
             delayMicroseconds(50);
 
+#if defined(ARDUINO)
             SPI.transfer(&reg, 1);
+#else
+#endif
 
             delayMicroseconds(500);
 
+#if defined(ARDUINO)
             uint8_t value = 0; SPI.transfer(&value, 1);
+#else
+#endif
 
 
             delayMicroseconds(50);
             digitalWrite(_cspin, HIGH);
             delayMicroseconds(200);
 
+#if defined(ARDUINO)
             SPI.endTransaction();
+#else
+#endif
 
             delayMicroseconds(200);
 
@@ -203,7 +238,7 @@ class PMW3901 {
             registerWrite(0x40, 0x41);
             registerWrite(0x70, 0x00);
 
-            delay(10); // delay 10ms
+            delay(10);
 
             registerWrite(0x32, 0x44);
             registerWrite(0x7F, 0x07);
@@ -224,7 +259,5 @@ class PMW3901 {
             registerWrite(0x5A, 0x10);
             registerWrite(0x54, 0x00);
         }
-
-     private:
 
 };
