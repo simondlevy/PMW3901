@@ -18,8 +18,10 @@ class PMW3901_Arduino : public PMW3901 {
         bool begin(void)
         {
             // Setup SPI port
-            _spi->begin();
+            spi_begin();
+
             pinMode(_cspin, OUTPUT);
+
             _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
 
             // Make sure the SPI bus is reset
@@ -76,6 +78,13 @@ class PMW3901_Arduino : public PMW3901 {
             _spi->endTransaction();
 
             delayMicroseconds(50);
+        }
+
+    protected:
+
+        virtual void spi_begin(void) override
+        {
+            _spi->begin();
         }
 
     private:

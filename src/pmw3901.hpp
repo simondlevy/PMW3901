@@ -18,7 +18,9 @@ class PMW3901 {
     protected:
 
         virtual void registerWrite(uint8_t reg, uint8_t value) = 0;
- 
+
+        virtual void spi_begin(void) = 0;
+
         void initRegisters(void)
         {
             registerWrite(0x7F, 0x00);
