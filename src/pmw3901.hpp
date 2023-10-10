@@ -21,6 +21,8 @@ class PMW3901 {
 
         virtual void spi_begin(void) = 0;
 
+        virtual void spi_begin_transaction(void) = 0;
+
         void initRegisters(void)
         {
             registerWrite(0x7F, 0x00);

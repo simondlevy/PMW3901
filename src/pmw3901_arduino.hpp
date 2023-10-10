@@ -22,7 +22,7 @@ class PMW3901_Arduino : public PMW3901 {
 
             pinMode(_cspin, OUTPUT);
 
-            _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+            spi_begin_transaction();
 
             // Make sure the SPI bus is reset
             digitalWrite(_cspin, HIGH);
@@ -85,6 +85,11 @@ class PMW3901_Arduino : public PMW3901 {
         virtual void spi_begin(void) override
         {
             _spi->begin();
+        }
+
+        virtual void spi_begin_transaction(void) override
+        {
+            _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
         }
 
     private:
