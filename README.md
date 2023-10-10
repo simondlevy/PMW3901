@@ -1,8 +1,9 @@
 # Arduino driver for PMW3901 optical flow sensor
 
-This library is based on on the [Bitcraze_PMW3901](https://github.com/bitcraze/Bitcraze_PMW3901)
-library, q.v. for details.  I made the following modifications:
+This library is based on on the C 
+[driver code](https://github.com/bitcraze/crazyflie-firmware/blob/9343aa686600aa5f04beb43549c81bdfda1f9cb8/src/drivers/src/pmw3901.c#L218)
+from  Bitcraze.  I made the following modifications
 
-* Support different SPI buses (SPI0, SPI1, SPI2, ...; defaults to SPI0, a.k.a. SPI)
+1. Header-only C++
 
-* Support software SPI via the [DigitalIO](https://github.com/greiman/DigitalIO) library
+2. Cross-platform (works with Arduino and Raspberry Pi)
