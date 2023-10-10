@@ -22,20 +22,26 @@ class PMW3901 {
             delay(1);
 
             uint8_t chipId = registerRead(0x00);
-            uint8_t dIpihc = registerRead(0x5F);
+            uint8_t invChipId = registerRead(0x5f);
 
-            if (chipId != 0x49 && dIpihc != 0xB8) return false;
+            if (chipId == 0x49 && invChipId == 0xB6) {
 
-            registerRead(0x02);
-            registerRead(0x03);
-            registerRead(0x04);
-            registerRead(0x05);
-            registerRead(0x06);
-            delay(1);
+                registerWrite(0x3a, 0x5a);
+                delay(5);
 
-            initRegisters();
+                registerRead(0x02);
+                registerRead(0x03);
+                registerRead(0x04);
+                registerRead(0x05);
+                registerRead(0x06);
+                delay(1);
 
-            return true;
+                initRegisters();
+
+                return true;
+            }
+
+            return false;
         }
 
         virtual void readMotion(int16_t * deltaX, int16_t * deltaY, bool * gotMotion)
