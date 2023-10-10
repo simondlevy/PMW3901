@@ -15,29 +15,6 @@ class PMW3901_Arduino : public PMW3901 {
             _spi = spi;
         }
 
-       void readMotion(motionBurst_t * motion)
-        {
-            uint8_t address = 0x16;
-
-            spi_begin_transaction();
-
-            digitalWrite(_cspin,LOW);
-            delayMicroseconds(50);
-
-            spi_transfer(&address, 1);
-
-            delayMicroseconds(50);
-
-            spi_transfer(motion, sizeof(motionBurst_t));
-
-            delayMicroseconds(50);
-            digitalWrite(_cspin, HIGH);
-
-            spi_end_transaction();
-
-            delayMicroseconds(50);
-        }
-
     protected:
 
         virtual void spi_begin(void) override
