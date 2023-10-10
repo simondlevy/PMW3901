@@ -3,11 +3,11 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-class PMW3901 {
+class PMW3901_Arduino {
 
     public:
 
-        PMW3901(uint8_t cspin, SPIClass * spi = &SPI)
+        PMW3901_Arduino(uint8_t cspin, SPIClass * spi = &SPI)
         {
             _cspin = cspin;
             _spi = spi;
