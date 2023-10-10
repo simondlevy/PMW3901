@@ -73,14 +73,24 @@ class PMW3901 {
             *gotMotion = (_motion_burst.motion == 0xB0);
         }
 
-     protected:
-
-        uint8_t _cspin;
+    protected:
 
         PMW3901(const uint8_t cspin)
         {
             _cspin = cspin;
         }
+
+        virtual void spi_begin(void) = 0;
+
+        virtual void spi_begin_transaction(void) = 0;
+
+        virtual void spi_end_transaction(void) = 0;
+
+        virtual void spi_transfer(void * data, size_t size);
+
+    private:
+
+        uint8_t _cspin;
 
         void registerWrite(uint8_t reg, uint8_t value)
         {
@@ -126,14 +136,6 @@ class PMW3901 {
 
             return value;
         }
-
-        virtual void spi_begin(void) = 0;
-
-        virtual void spi_begin_transaction(void) = 0;
-
-        virtual void spi_end_transaction(void) = 0;
-
-        virtual void spi_transfer(void * data, size_t size);
 
         uint8_t spi_transfer(uint8_t data)
         {
