@@ -1,14 +1,12 @@
 #pragma once
 
-#include <new.hpp>
-
-class PMW3901 : public NewPMW3901 {
+class PMW3901 {
 
     public:
 
         virtual bool begin(const uint8_t csPin)
         {
-            NewPMW3901::begin(csPin);
+            _cspin = csPin;
 
             // Setup SPI port
             spi_begin();
@@ -235,6 +233,8 @@ class PMW3901 : public NewPMW3901 {
             int16_t deltaY;
 
         } __attribute__((packed)) motionBurst_t;
+
+        uint8_t _cspin;
 
         motionBurst_t _motion_burst;
 };
