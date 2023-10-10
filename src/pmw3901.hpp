@@ -25,6 +25,13 @@ class PMW3901 {
 
         virtual void spi_end_transaction(void) = 0;
 
+        virtual void spi_transfer(void * data, size_t size);
+
+        void spi_transfer(uint8_t data)
+        {
+            spi_transfer(&data, 1);
+        }
+
         void initRegisters(void)
         {
             registerWrite(0x7F, 0x00);

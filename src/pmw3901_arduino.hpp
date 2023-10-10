@@ -66,11 +66,11 @@ class PMW3901_Arduino : public PMW3901 {
             digitalWrite(_cspin,LOW);
             delayMicroseconds(50);
 
-            _spi->transfer(&address, 1);
+            spi_transfer(&address, 1);
 
             delayMicroseconds(50);
 
-            _spi->transfer(motion, sizeof(motionBurst_t));
+            spi_transfer(motion, sizeof(motionBurst_t));
 
             delayMicroseconds(50);
             digitalWrite(_cspin, HIGH);
@@ -97,6 +97,11 @@ class PMW3901_Arduino : public PMW3901 {
             _spi->endTransaction();
         }
 
+        virtual void spi_transfer(void * data, size_t size)
+        {
+            _spi->transfer(data, size);
+        }
+
     private:
 
         uint8_t _cspin;
@@ -112,8 +117,10 @@ class PMW3901_Arduino : public PMW3901 {
             digitalWrite(_cspin, LOW);
 
             delayMicroseconds(50);
-            _spi->transfer(reg);
-            _spi->transfer(value);
+
+            PMW3901::spi_transfer(reg);
+            PMW3901::spi_transfer(value);
+
             delayMicroseconds(50);
 
             digitalWrite(_cspin, HIGH);
