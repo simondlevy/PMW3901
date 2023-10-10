@@ -32,7 +32,7 @@ class PMW3901_Arduino : public PMW3901 {
             digitalWrite(_cspin, HIGH);
             delay(1);
 
-            _spi->endTransaction();
+            spi_end_transaction();
 
             // Power on reset
             registerWrite(0x3A, 0x5A);
@@ -75,7 +75,7 @@ class PMW3901_Arduino : public PMW3901 {
             delayMicroseconds(50);
             digitalWrite(_cspin, HIGH);
 
-            _spi->endTransaction();
+            spi_end_transaction();
 
             delayMicroseconds(50);
         }
@@ -90,6 +90,11 @@ class PMW3901_Arduino : public PMW3901 {
         virtual void spi_begin_transaction(void) override
         {
             _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+        }
+
+        virtual void spi_end_transaction(void) override
+        {
+            _spi->endTransaction();
         }
 
     private:
@@ -113,7 +118,7 @@ class PMW3901_Arduino : public PMW3901 {
 
             digitalWrite(_cspin, HIGH);
 
-            _spi->endTransaction();
+            spi_end_transaction();
 
             delayMicroseconds(200);
         }
@@ -135,7 +140,7 @@ class PMW3901_Arduino : public PMW3901 {
 
             delayMicroseconds(200);
 
-            _spi->endTransaction();
+            spi_end_transaction();
 
             return value;
         }
