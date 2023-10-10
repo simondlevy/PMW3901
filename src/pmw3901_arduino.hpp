@@ -9,10 +9,14 @@ class PMW3901_Arduino : public PMW3901 {
 
     public:
 
-        PMW3901_Arduino(uint8_t cspin, SPIClass * spi = &SPI)
-            : PMW3901(cspin)
+        PMW3901_Arduino(SPIClass * spi = &SPI)
         {
             _spi = spi;
+        }
+
+        bool begin(const uint8_t csPin=10)
+        {
+            return PMW3901::begin(csPin);
         }
 
     protected:

@@ -4,8 +4,10 @@ class PMW3901 {
 
     public:
 
-        bool begin(void)
+        bool begin(const uint8_t csPin)
         {
+            _cspin = csPin;
+
             // Setup SPI port
             spi_begin();
 
@@ -74,11 +76,6 @@ class PMW3901 {
         }
 
     protected:
-
-        PMW3901(const uint8_t cspin)
-        {
-            _cspin = cspin;
-        }
 
         virtual void spi_begin(void) = 0;
 
