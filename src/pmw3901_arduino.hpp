@@ -61,7 +61,7 @@ class PMW3901_Arduino : public PMW3901 {
         {
             uint8_t address = 0x16;
 
-            _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+            spi_begin_transaction();
 
             digitalWrite(_cspin,LOW);
             delayMicroseconds(50);
@@ -102,7 +102,7 @@ class PMW3901_Arduino : public PMW3901 {
         {
             reg |= 0x80u;
 
-            _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+            spi_begin_transaction();
 
             digitalWrite(_cspin, LOW);
 
@@ -121,7 +121,7 @@ class PMW3901_Arduino : public PMW3901 {
         uint8_t registerRead(uint8_t reg) {
             reg &= ~0x80u;
 
-            _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+            spi_begin_transaction();
 
             digitalWrite(_cspin, LOW);
 
