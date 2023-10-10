@@ -27,9 +27,11 @@ class PMW3901 {
 
         virtual void spi_transfer(void * data, size_t size);
 
-        void spi_transfer(uint8_t data)
+        uint8_t spi_transfer(uint8_t data)
         {
             spi_transfer(&data, 1);
+
+            return data;
         }
 
         void initRegisters(void)
