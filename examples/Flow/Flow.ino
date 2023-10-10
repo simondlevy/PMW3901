@@ -3,8 +3,6 @@
 // Using digital pin 10 for chip select
 static PMW3901_Arduino sensor(10);
 
-static PMW3901::motionBurst_t motion;
-
 void setup() 
 {
     Serial.begin(115200);
@@ -20,14 +18,18 @@ void setup()
 
 void loop() 
 {
+    int16_t deltaX = 0;
+    int16_t deltaY = 0;
+    bool gotMotion = false;
 
-    sensor.readMotion(&motion); 
+    sensor.readMotion(&deltaX, &deltaY, &gotMotion); 
 
-    Serial.print("X: ");
-    Serial.print(motion.deltaX);
-    Serial.print(", Y: ");
-    Serial.print(motion.deltaY);
-    Serial.print("\n");
+    Serial.print("deltaX: ");
+    Serial.print(deltaX);
+    Serial.print(",\tdeltaY: ");
+    Serial.print(deltaY);
+    Serial.print(",\tgotMotion: ");
+    Serial.println(gotMotion ? "yes" : "no");
 
     delay(100);
 }

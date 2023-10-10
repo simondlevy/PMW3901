@@ -4,17 +4,6 @@ class PMW3901 {
 
     public:
 
-        typedef struct motionBurst_s {
-
-            uint8_t motion;
-
-            uint8_t observation;
-
-            int16_t deltaX;
-            int16_t deltaY;
-
-        } __attribute__((packed)) motionBurst_t;
-
         bool begin(void)
         {
             // Setup SPI port
@@ -57,7 +46,7 @@ class PMW3901 {
             return true;
         }
 
-       void readMotion(motionBurst_t * motion)
+        void readMotion(int16_t * deltaX, int16_t * deltaY, bool * gotMotion)
         {
             uint8_t address = 0x16;
 
@@ -70,7 +59,7 @@ class PMW3901 {
 
             delayMicroseconds(50);
 
-            spi_transfer(motion, sizeof(motionBurst_t));
+            spi_transfer(&_motion_burst, sizeof(motionBurst_t));
 
             delayMicroseconds(50);
             digitalWrite(_cspin, HIGH);
@@ -78,6 +67,10 @@ class PMW3901 {
             spi_end_transaction();
 
             delayMicroseconds(50);
+
+            *deltaX = _motion_burst.deltaX;
+            *deltaY = _motion_burst.deltaY;
+            *gotMotion = (_motion_burst.motion == 0xB0);
         }
 
      protected:
@@ -232,4 +225,19 @@ class PMW3901 {
             registerWrite(0x5A, 0x10);
             registerWrite(0x54, 0x00);
         }
+
+     private:
+
+        typedef struct motionBurst_s {
+
+            uint8_t motion;
+
+            uint8_t observation;
+
+            int16_t deltaX;
+            int16_t deltaY;
+
+        } __attribute__((packed)) motionBurst_t;
+
+        motionBurst_t _motion_burst;
 };
