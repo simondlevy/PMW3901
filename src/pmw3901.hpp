@@ -1,16 +1,17 @@
 #pragma once
 
 #include <Arduino.h>
+#include <SPI.h>
 
 class PMW3901 {
 
     public:
 
-        virtual bool begin(const uint8_t csPin)
+        bool begin(const uint8_t csPin=10)
         {
             _cspin = csPin;
 
-            spi_begin();
+            SPI.begin();
 
             pinMode(_cspin, OUTPUT);
 
@@ -44,25 +45,26 @@ class PMW3901 {
             return false;
         }
 
-        virtual void readMotion(int16_t * deltaX, int16_t * deltaY, bool * gotMotion)
+        void readMotion(int16_t * deltaX, int16_t * deltaY, bool * gotMotion)
         {
             uint8_t address = 0x16;
 
-            spi_begin_transaction();
+            SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
 
             digitalWrite(_cspin,LOW);
             delayMicroseconds(50);
 
-            spi_transfer(&address, 1);
+            SPI.transfer(&address, 1);
 
             delayMicroseconds(50);
 
-            spi_transfer(&_motion_burst, sizeof(motionBurst_t));
+            SPI.transfer(&_motion_burst, 
+                    sizeof(motionBurst_t));
 
             delayMicroseconds(50);
             digitalWrite(_cspin, HIGH);
 
-            spi_end_transaction();
+            SPI.endTransaction();
 
             delayMicroseconds(50);
 
@@ -71,69 +73,75 @@ class PMW3901 {
             *gotMotion = (_motion_burst.motion == 0xB0);
         }
 
-    protected:
+    private:
 
-        virtual void spi_begin(void) = 0;
+        typedef struct motionBurst_s {
 
-        virtual void spi_begin_transaction(void) = 0;
+            uint8_t motion;
 
-        virtual void spi_end_transaction(void) = 0;
+            uint8_t observation;
 
-        virtual void spi_transfer(void * data, size_t size) = 0;
+            int16_t deltaX;
+            int16_t deltaY;
 
-        virtual void registerWrite(uint8_t reg, uint8_t value)
+        } __attribute__((packed)) motionBurst_t;
+
+        uint8_t _cspin;
+
+        motionBurst_t _motion_burst;
+
+        void registerWrite(uint8_t reg, uint8_t value)
         {
             reg |= 0x80u;
 
-            spi_begin_transaction();
+            SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
 
             digitalWrite(_cspin, LOW);
 
             delayMicroseconds(50);
 
-            spi_transfer(reg);
-            spi_transfer(value);
+            SPI.transfer(&reg, 1);
+            SPI.transfer(&value, 1);
+
 
             delayMicroseconds(50);
 
             digitalWrite(_cspin, HIGH);
 
-            spi_end_transaction();
+            SPI.endTransaction();
 
             delayMicroseconds(200);
         }
 
-        virtual uint8_t registerRead(uint8_t reg) {
+        uint8_t registerRead(uint8_t reg) {
 
             reg &= ~0x80u;
 
-            spi_begin_transaction();
+            SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
 
             digitalWrite(_cspin, LOW);
 
             delayMicroseconds(50);
-            spi_transfer(reg);
+
+            SPI.transfer(&reg, 1);
+
+            delayMicroseconds(500);
+
+            uint8_t value = 0; SPI.transfer(&value, 1);
+
+
             delayMicroseconds(50);
-            uint8_t value = spi_transfer(0);
-            delayMicroseconds(200);
-
             digitalWrite(_cspin, HIGH);
-
             delayMicroseconds(200);
 
-            spi_end_transaction();
+            SPI.endTransaction();
+
+            delayMicroseconds(200);
 
             return value;
         }
 
-        virtual uint8_t spi_transfer(uint8_t data)
-        {
-            spi_transfer(&data, 1);
-
-            return data;
-        }
-
-        virtual void initRegisters(void)
+        void initRegisters(void)
         {
             registerWrite(0x7F, 0x00);
             registerWrite(0x61, 0xAD);
@@ -219,18 +227,4 @@ class PMW3901 {
 
      private:
 
-        typedef struct motionBurst_s {
-
-            uint8_t motion;
-
-            uint8_t observation;
-
-            int16_t deltaX;
-            int16_t deltaY;
-
-        } __attribute__((packed)) motionBurst_t;
-
-        uint8_t _cspin;
-
-        motionBurst_t _motion_burst;
 };

@@ -1,7 +1,7 @@
-#include "pmw3901_arduino.hpp"
+#include "pmw3901.hpp"
 
 // Using digital pin 10 for chip select
-static PMW3901_Arduino sensor;
+static PMW3901 sensor;
 
 void setup() 
 {
