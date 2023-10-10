@@ -10,8 +10,8 @@ class PMW3901_Arduino : public PMW3901 {
     public:
 
         PMW3901_Arduino(uint8_t cspin, SPIClass * spi = &SPI)
+            : PMW3901(cspin)
         {
-            _cspin = cspin;
             _spi = spi;
         }
 
@@ -104,51 +104,6 @@ class PMW3901_Arduino : public PMW3901 {
 
     private:
 
-        uint8_t _cspin;
-
         SPIClass * _spi ;
 
-        virtual void registerWrite(uint8_t reg, uint8_t value) override
-        {
-            reg |= 0x80u;
-
-            spi_begin_transaction();
-
-            digitalWrite(_cspin, LOW);
-
-            delayMicroseconds(50);
-
-            PMW3901::spi_transfer(reg);
-            PMW3901::spi_transfer(value);
-
-            delayMicroseconds(50);
-
-            digitalWrite(_cspin, HIGH);
-
-            spi_end_transaction();
-
-            delayMicroseconds(200);
-        }
-
-        uint8_t registerRead(uint8_t reg) {
-            reg &= ~0x80u;
-
-            spi_begin_transaction();
-
-            digitalWrite(_cspin, LOW);
-
-            delayMicroseconds(50);
-            PMW3901::spi_transfer(reg);
-            delayMicroseconds(50);
-            uint8_t value = PMW3901::spi_transfer(0);
-            delayMicroseconds(200);
-
-            digitalWrite(_cspin, HIGH);
-
-            delayMicroseconds(200);
-
-            spi_end_transaction();
-
-            return value;
-        }
 };

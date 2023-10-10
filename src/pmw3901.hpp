@@ -17,7 +17,57 @@ class PMW3901 {
 
     protected:
 
-        virtual void registerWrite(uint8_t reg, uint8_t value) = 0;
+        uint8_t _cspin;
+
+        PMW3901(const uint8_t cspin)
+        {
+            _cspin = cspin;
+        }
+
+        void registerWrite(uint8_t reg, uint8_t value)
+        {
+            reg |= 0x80u;
+
+            spi_begin_transaction();
+
+            digitalWrite(_cspin, LOW);
+
+            delayMicroseconds(50);
+
+            spi_transfer(reg);
+            spi_transfer(value);
+
+            delayMicroseconds(50);
+
+            digitalWrite(_cspin, HIGH);
+
+            spi_end_transaction();
+
+            delayMicroseconds(200);
+        }
+
+        uint8_t registerRead(uint8_t reg) {
+
+            reg &= ~0x80u;
+
+            spi_begin_transaction();
+
+            digitalWrite(_cspin, LOW);
+
+            delayMicroseconds(50);
+            spi_transfer(reg);
+            delayMicroseconds(50);
+            uint8_t value = spi_transfer(0);
+            delayMicroseconds(200);
+
+            digitalWrite(_cspin, HIGH);
+
+            delayMicroseconds(200);
+
+            spi_end_transaction();
+
+            return value;
+        }
 
         virtual void spi_begin(void) = 0;
 
