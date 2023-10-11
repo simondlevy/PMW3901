@@ -50,8 +50,8 @@ static uint8_t spi_read(void)
 #if defined(ARDUINO)
     SPI.transfer(&value, 1);
 #else
-    uint8_t dummy = 0;
-    spiExchange(1, &dummy, &value);
+    //uint8_t dummy = 0;
+    spiExchange(1, &value, &value);
 #endif
     return value;
 }
