@@ -2,58 +2,7 @@
 
 #include <Arduino.h>
 
-#if defined(ARDUINO)
-#include <SPI.h>
-#endif
-
-static void spi_begin(void)
-{
-#if defined(ARDUINO)
-    SPI.begin();
-#else
-    spiBegin();
-#endif
-}
-
-static void spi_begin_transaction(void)
-{
-#if defined(ARDUINO)
-    SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
-#else
-    spiBeginTransaction(SPI_BAUDRATE_2MHZ);
-#endif
-
-}
-
-static void spi_end_transaction(void)
-{
-#if defined(ARDUINO)
-    SPI.endTransaction();
-#else
-    spiEndTransaction();
-#endif
-}
-
-static void spi_write_value(uint8_t value)
-{
-#if defined(ARDUINO)
-    SPI.transfer(&value, 1);
-#else
-    spiExchange(1, &value, &value);
-#endif
-}
-
-static void spi_read_buffer(void * buffer, const size_t size)
-{
-#if defined(ARDUINO)
-    SPI.transfer(buffer, size);
-#else
-    spiExchange(size, (uint8_t *)buffer, (uint8_t *)buffer);
-#endif
-}
-
-
-//////////////////////////////////////////////////////////////////////
+#include "spi_compat.h"
 
 class PMW3901 {
 
