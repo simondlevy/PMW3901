@@ -9,19 +9,19 @@ class PMW3901 {
 
         bool begin(const uint8_t csPin=10)
         {
-            _cspin = csPin;
+            _cs_pin = csPin;
 
 #if defined(ARDUINO)
             SPI.begin();
 #else
 #endif
-            pinMode(_cspin, OUTPUT);
+            pinMode(_cs_pin, OUTPUT);
 
-            digitalWrite(_cspin, HIGH);
+            digitalWrite(_cs_pin, HIGH);
             delay(1);
-            digitalWrite(_cspin, LOW);
+            digitalWrite(_cs_pin, LOW);
             delay(1);
-            digitalWrite(_cspin, HIGH);
+            digitalWrite(_cs_pin, HIGH);
             delay(1);
 
             uint8_t chipId = registerRead(0x00);
@@ -56,7 +56,7 @@ class PMW3901 {
 #else
 #endif
 
-            digitalWrite(_cspin,LOW);
+            digitalWrite(_cs_pin,LOW);
             delayMicroseconds(50);
 
 #if defined(ARDUINO)
@@ -73,11 +73,10 @@ class PMW3901 {
 #endif
 
             delayMicroseconds(50);
-            digitalWrite(_cspin, HIGH);
+            digitalWrite(_cs_pin, HIGH);
 
 #if defined(ARDUINO)
             SPI.endTransaction();
-
 #else
 #endif
             delayMicroseconds(50);
@@ -100,7 +99,7 @@ class PMW3901 {
 
         } __attribute__((packed)) motionBurst_t;
 
-        uint8_t _cspin;
+        uint8_t _cs_pin;
 
         motionBurst_t _motion_burst;
 
@@ -113,20 +112,18 @@ class PMW3901 {
 #else
 #endif
 
-            digitalWrite(_cspin, LOW);
+            digitalWrite(_cs_pin, LOW);
 
             delayMicroseconds(50);
 
 #if defined(ARDUINO)
-            SPI.transfer(&reg, 1);
+            SPI.transfer(&reg, 1); 
             SPI.transfer(&value, 1);
 #else
 #endif
 
-
             delayMicroseconds(50);
-
-            digitalWrite(_cspin, HIGH);
+            digitalWrite(_cs_pin, HIGH);
 
 #if defined(ARDUINO)
             SPI.endTransaction();
@@ -145,7 +142,7 @@ class PMW3901 {
 #else
 #endif
 
-            digitalWrite(_cspin, LOW);
+            digitalWrite(_cs_pin, LOW);
 
             delayMicroseconds(50);
 
@@ -163,7 +160,7 @@ class PMW3901 {
 
 
             delayMicroseconds(50);
-            digitalWrite(_cspin, HIGH);
+            digitalWrite(_cs_pin, HIGH);
             delayMicroseconds(200);
 
 #if defined(ARDUINO)
