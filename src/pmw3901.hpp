@@ -1,7 +1,10 @@
 #pragma once
 
 #include <Arduino.h>
+
+#if defined(ARDUINO)
 #include <SPI.h>
+#endif
 
 class PMW3901 {
 
@@ -14,6 +17,7 @@ class PMW3901 {
 #if defined(ARDUINO)
             SPI.begin();
 #else
+            spiBegin();
 #endif
             pinMode(_cs_pin, OUTPUT);
 
@@ -54,6 +58,7 @@ class PMW3901 {
 #if defined(ARDUINO)
             SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
 #else
+            spiBeginTransaction(SPI_BAUDRATE_2MHZ);
 #endif
 
             digitalWrite(_cs_pin,LOW);
@@ -62,14 +67,16 @@ class PMW3901 {
 #if defined(ARDUINO)
             SPI.transfer(&address, 1);
 #else
+            spiExchange(1, &address, &address);
 #endif
 
             delayMicroseconds(50);
 
 #if defined(ARDUINO)
-            SPI.transfer(&_motion_burst, 
-                    sizeof(motionBurst_t));
+            SPI.transfer(&_motion_burst, sizeof(motionBurst_t));
 #else
+            spiExchange(sizeof(motionBurst_t), 
+                    (uint8_t*)&_motion_burst, (uint8_t*)&_motion_burst);
 #endif
 
             delayMicroseconds(50);
@@ -78,6 +85,7 @@ class PMW3901 {
 #if defined(ARDUINO)
             SPI.endTransaction();
 #else
+            spiEndTransaction();
 #endif
             delayMicroseconds(50);
 
@@ -110,6 +118,7 @@ class PMW3901 {
 #if defined(ARDUINO)
             SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
 #else
+            spiBeginTransaction(SPI_BAUDRATE_2MHZ);
 #endif
 
             digitalWrite(_cs_pin, LOW);
@@ -120,6 +129,8 @@ class PMW3901 {
             SPI.transfer(&reg, 1); 
             SPI.transfer(&value, 1);
 #else
+            spiExchange(1, &reg, &reg);
+            spiExchange(1, &value, &value);
 #endif
 
             delayMicroseconds(50);
@@ -128,18 +139,20 @@ class PMW3901 {
 #if defined(ARDUINO)
             SPI.endTransaction();
 #else
+            spiEndTransaction();
 #endif
 
             delayMicroseconds(200);
         }
 
-        uint8_t registerRead(uint8_t reg) {
-
+        uint8_t registerRead(uint8_t reg)
+        {
             reg &= ~0x80u;
 
 #if defined(ARDUINO)
             SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
 #else
+            spiBeginTransaction(SPI_BAUDRATE_2MHZ);
 #endif
 
             digitalWrite(_cs_pin, LOW);
@@ -149,15 +162,19 @@ class PMW3901 {
 #if defined(ARDUINO)
             SPI.transfer(&reg, 1);
 #else
+            spiExchange(1, &reg, &reg);
 #endif
 
             delayMicroseconds(500);
 
-#if defined(ARDUINO)
-            uint8_t value = 0; SPI.transfer(&value, 1);
-#else
-#endif
+            uint8_t value = 0; 
 
+#if defined(ARDUINO)
+            SPI.transfer(&value, 1);
+#else
+            uint8_t dummy = 0;
+            spiExchange(1, &dummy, &value);
+#endif
 
             delayMicroseconds(50);
             digitalWrite(_cs_pin, HIGH);
@@ -166,6 +183,7 @@ class PMW3901 {
 #if defined(ARDUINO)
             SPI.endTransaction();
 #else
+            spiEndTransaction();
 #endif
 
             delayMicroseconds(200);
