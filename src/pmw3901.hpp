@@ -6,6 +6,15 @@
 #include <SPI.h>
 #endif
 
+static void spi_begin(void)
+{
+#if defined(ARDUINO)
+            SPI.begin();
+#else
+            spiBegin();
+#endif
+ }
+
 class PMW3901 {
 
     public:
@@ -14,11 +23,8 @@ class PMW3901 {
         {
             _cs_pin = csPin;
 
-#if defined(ARDUINO)
-            SPI.begin();
-#else
-            spiBegin();
-#endif
+            spi_begin();
+
             pinMode(_cs_pin, OUTPUT);
 
             digitalWrite(_cs_pin, HIGH);
