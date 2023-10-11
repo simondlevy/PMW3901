@@ -9,11 +9,21 @@
 static void spi_begin(void)
 {
 #if defined(ARDUINO)
-            SPI.begin();
+    SPI.begin();
 #else
-            spiBegin();
+    spiBegin();
 #endif
- }
+}
+
+static void spi_begin_transaction(void)
+{
+#if defined(ARDUINO)
+    SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+#else
+    spiBeginTransaction(SPI_BAUDRATE_2MHZ);
+#endif
+
+}
 
 class PMW3901 {
 
@@ -61,11 +71,7 @@ class PMW3901 {
         {
             uint8_t address = 0x16;
 
-#if defined(ARDUINO)
-            SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
-#else
-            spiBeginTransaction(SPI_BAUDRATE_2MHZ);
-#endif
+            spi_begin_transaction();
 
             digitalWrite(_cs_pin,LOW);
             delayMicroseconds(50);
@@ -121,11 +127,7 @@ class PMW3901 {
         {
             reg |= 0x80u;
 
-#if defined(ARDUINO)
-            SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
-#else
-            spiBeginTransaction(SPI_BAUDRATE_2MHZ);
-#endif
+            spi_begin_transaction();
 
             digitalWrite(_cs_pin, LOW);
 
@@ -155,11 +157,7 @@ class PMW3901 {
         {
             reg &= ~0x80u;
 
-#if defined(ARDUINO)
-            SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
-#else
-            spiBeginTransaction(SPI_BAUDRATE_2MHZ);
-#endif
+            spi_begin_transaction();
 
             digitalWrite(_cs_pin, LOW);
 
