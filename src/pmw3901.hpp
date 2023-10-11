@@ -25,6 +25,15 @@ static void spi_begin_transaction(void)
 
 }
 
+static void spi_end_transaction(void)
+{
+#if defined(ARDUINO)
+    SPI.endTransaction();
+#else
+    spiEndTransaction();
+#endif
+}
+
 class PMW3901 {
 
     public:
@@ -94,11 +103,8 @@ class PMW3901 {
             delayMicroseconds(50);
             digitalWrite(_cs_pin, HIGH);
 
-#if defined(ARDUINO)
-            SPI.endTransaction();
-#else
-            spiEndTransaction();
-#endif
+            spi_end_transaction();
+
             delayMicroseconds(50);
 
             *deltaX = _motion_burst.deltaX;
@@ -144,11 +150,7 @@ class PMW3901 {
             delayMicroseconds(50);
             digitalWrite(_cs_pin, HIGH);
 
-#if defined(ARDUINO)
-            SPI.endTransaction();
-#else
-            spiEndTransaction();
-#endif
+            spi_end_transaction();
 
             delayMicroseconds(200);
         }
@@ -184,11 +186,7 @@ class PMW3901 {
             digitalWrite(_cs_pin, HIGH);
             delayMicroseconds(200);
 
-#if defined(ARDUINO)
-            SPI.endTransaction();
-#else
-            spiEndTransaction();
-#endif
+            spi_end_transaction();
 
             delayMicroseconds(200);
 
