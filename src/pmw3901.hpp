@@ -34,6 +34,16 @@ static void spi_end_transaction(void)
 #endif
 }
 
+static void spi_transfer1(uint8_t data)
+{
+#if defined(ARDUINO)
+    SPI.transfer(&data, 1);
+#else
+    spiExchange(1, &data, &data);
+#endif
+
+}
+
 class PMW3901 {
 
     public:
@@ -139,13 +149,8 @@ class PMW3901 {
 
             delayMicroseconds(50);
 
-#if defined(ARDUINO)
-            SPI.transfer(&reg, 1); 
-            SPI.transfer(&value, 1);
-#else
-            spiExchange(1, &reg, &reg);
-            spiExchange(1, &value, &value);
-#endif
+            spi_transfer1(reg);
+            spi_transfer1(value);
 
             delayMicroseconds(50);
             digitalWrite(_cs_pin, HIGH);
