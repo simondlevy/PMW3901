@@ -170,11 +170,7 @@ class PMW3901 {
 
             delayMicroseconds(50);
 
-#if defined(ARDUINO)
-            SPI.transfer(&reg, 1);
-#else
-            spiExchange(1, &reg, &reg);
-#endif
+            spi_transfer1(reg);
 
             delayMicroseconds(500);
 
