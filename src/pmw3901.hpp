@@ -34,15 +34,26 @@ static void spi_end_transaction(void)
 #endif
 }
 
-static void spi_transfer1(uint8_t data)
+static void spi_transfer1(uint8_t value)
 {
 #if defined(ARDUINO)
-    SPI.transfer(&data, 1);
+    SPI.transfer(&value, 1);
 #else
-    spiExchange(1, &data, &data);
+    spiExchange(1, &value, &value);
 #endif
-
 }
+
+static void spi_transfer_buffer(void * buffer, const size_t size)
+{
+#if defined(ARDUINO)
+    SPI.transfer(buffer, size);
+#else
+    spiExchange(size, (uint8_t *)buffer, (uint8_t *)buffer);
+#endif
+}
+
+
+//////////////////////////////////////////////////////////////////////
 
 class PMW3901 {
 
@@ -95,20 +106,11 @@ class PMW3901 {
             digitalWrite(_cs_pin,LOW);
             delayMicroseconds(50);
 
-#if defined(ARDUINO)
-            SPI.transfer(&address, 1);
-#else
-            spiExchange(1, &address, &address);
-#endif
+            spi_transfer1(address);
 
             delayMicroseconds(50);
 
-#if defined(ARDUINO)
-            SPI.transfer(&_motion_burst, sizeof(motionBurst_t));
-#else
-            spiExchange(sizeof(motionBurst_t), 
-                    (uint8_t*)&_motion_burst, (uint8_t*)&_motion_burst);
-#endif
+            spi_transfer_buffer(&_motion_burst, sizeof(motionBurst_t));
 
             delayMicroseconds(50);
             digitalWrite(_cs_pin, HIGH);
