@@ -34,13 +34,26 @@ static void spi_end_transaction(void)
 #endif
 }
 
-static void spi_transfer1(uint8_t value)
+static void spi_write(uint8_t value)
 {
 #if defined(ARDUINO)
     SPI.transfer(&value, 1);
 #else
     spiExchange(1, &value, &value);
 #endif
+}
+
+
+static uint8_t spi_read(void)
+{
+    uint8_t value = 0;
+#if defined(ARDUINO)
+    SPI.transfer(&value, 1);
+#else
+    uint8_t dummy = 0;
+    spiExchange(1, &dummy, &value);
+#endif
+    return value;
 }
 
 static void spi_transfer_buffer(void * buffer, const size_t size)
@@ -106,7 +119,7 @@ class PMW3901 {
             digitalWrite(_cs_pin,LOW);
             delayMicroseconds(50);
 
-            spi_transfer1(address);
+            spi_write(address);
 
             delayMicroseconds(50);
 
@@ -151,8 +164,8 @@ class PMW3901 {
 
             delayMicroseconds(50);
 
-            spi_transfer1(reg);
-            spi_transfer1(value);
+            spi_write(reg);
+            spi_write(value);
 
             delayMicroseconds(50);
             digitalWrite(_cs_pin, HIGH);
@@ -172,18 +185,11 @@ class PMW3901 {
 
             delayMicroseconds(50);
 
-            spi_transfer1(reg);
+            spi_write(reg);
 
             delayMicroseconds(500);
 
-            uint8_t value = 0; 
-
-#if defined(ARDUINO)
-            SPI.transfer(&value, 1);
-#else
-            uint8_t dummy = 0;
-            spiExchange(1, &dummy, &value);
-#endif
+            auto value = spi_read();
 
             delayMicroseconds(50);
             digitalWrite(_cs_pin, HIGH);
