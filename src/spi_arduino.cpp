@@ -20,27 +20,37 @@
 
 #include "spi_compat.h"
 
-void spi_begin(void)
+void spi_begin(void * bus)
 {
-    SPI.begin();
+    SPIClass * spi = (SPIClass *)bus;
+
+    spi->begin();
 }
 
-void spi_begin_transaction(void)
+void spi_begin_transaction(void * bus)
 {
-    SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+    SPIClass * spi = (SPIClass *)bus;
+
+    spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
 }
 
-void spi_end_transaction(void)
+void spi_end_transaction(void * bus)
 {
-    SPI.endTransaction();
+    SPIClass * spi = (SPIClass *)bus;
+
+    spi->endTransaction();
 }
 
-void spi_write_value(uint8_t value)
+void spi_write_value(void * bus, uint8_t value)
 {
-    SPI.transfer(&value, 1);
+    SPIClass * spi = (SPIClass *)bus;
+
+    spi->transfer(&value, 1);
 }
 
-void spi_read_buffer(void * buffer, const size_t size)
+void spi_read_buffer(void * bus, void * buffer, const size_t size)
 {
-    SPI.transfer(buffer, size);
+    SPIClass * spi = (SPIClass *)bus;
+
+    spi->transfer(buffer, size);
 }

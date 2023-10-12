@@ -26,11 +26,42 @@ class PMW3901 {
 
     public:
 
-        bool begin(const uint8_t csPin=10)
+        void readMotion(int16_t * deltaX, int16_t * deltaY, bool * gotMotion)
+        {
+            uint8_t address = 0x16;
+
+            spi_begin_transaction(_bus);
+
+            digitalWrite(_cs_pin,LOW);
+            delayMicroseconds(50);
+
+            spi_write_value(_bus, address);
+
+            delayMicroseconds(50);
+
+            spi_read_buffer(_bus, &_motion_burst, sizeof(motionBurst_t));
+
+            delayMicroseconds(50);
+            digitalWrite(_cs_pin, HIGH);
+
+            spi_end_transaction(_bus);
+
+            delayMicroseconds(50);
+
+            *deltaX = _motion_burst.deltaX;
+            *deltaY = _motion_burst.deltaY;
+            *gotMotion = (_motion_burst.motion == 0xB0);
+        }
+
+    protected:
+
+        bool begin(void * bus, const uint8_t csPin)
         {
             _cs_pin = csPin;
 
-            spi_begin();
+            _bus = bus;
+
+            spi_begin(_bus);
 
             pinMode(_cs_pin, OUTPUT);
 
@@ -64,34 +95,9 @@ class PMW3901 {
             return false;
         }
 
-        void readMotion(int16_t * deltaX, int16_t * deltaY, bool * gotMotion)
-        {
-            uint8_t address = 0x16;
-
-            spi_begin_transaction();
-
-            digitalWrite(_cs_pin,LOW);
-            delayMicroseconds(50);
-
-            spi_write_value(address);
-
-            delayMicroseconds(50);
-
-            spi_read_buffer(&_motion_burst, sizeof(motionBurst_t));
-
-            delayMicroseconds(50);
-            digitalWrite(_cs_pin, HIGH);
-
-            spi_end_transaction();
-
-            delayMicroseconds(50);
-
-            *deltaX = _motion_burst.deltaX;
-            *deltaY = _motion_burst.deltaY;
-            *gotMotion = (_motion_burst.motion == 0xB0);
-        }
-
     private:
+
+        void * _bus;
 
         typedef struct motionBurst_s {
 
@@ -112,19 +118,19 @@ class PMW3901 {
         {
             reg |= 0x80u;
 
-            spi_begin_transaction();
+            spi_begin_transaction(_bus);
 
             digitalWrite(_cs_pin, LOW);
 
             delayMicroseconds(50);
 
-            spi_write_value(reg);
-            spi_write_value(value);
+            spi_write_value(_bus, reg);
+            spi_write_value(_bus, value);
 
             delayMicroseconds(50);
             digitalWrite(_cs_pin, HIGH);
 
-            spi_end_transaction();
+            spi_end_transaction(_bus);
 
             delayMicroseconds(200);
         }
@@ -133,24 +139,24 @@ class PMW3901 {
         {
             reg &= ~0x80u;
 
-            spi_begin_transaction();
+            spi_begin_transaction(_bus);
 
             digitalWrite(_cs_pin, LOW);
 
             delayMicroseconds(50);
 
-            spi_write_value(reg);
+            spi_write_value(_bus, reg);
 
             delayMicroseconds(500);
 
             uint8_t value = 0;
-            spi_read_buffer(&value, 1);
+            spi_read_buffer(_bus, &value, 1);
 
             delayMicroseconds(50);
             digitalWrite(_cs_pin, HIGH);
             delayMicroseconds(200);
 
-            spi_end_transaction();
+            spi_end_transaction(_bus);
 
             delayMicroseconds(200);
 

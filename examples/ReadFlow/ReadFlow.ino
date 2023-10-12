@@ -16,10 +16,10 @@
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "pmw3901.hpp"
+#include "pmw3901_arduino.hpp"
 
 // Using digital pin 10 for chip select
-static PMW3901 sensor;
+static PMW3901_Arduino sensor;
 
 void setup() 
 {

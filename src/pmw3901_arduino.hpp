@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Copyright 2017 Bitcraze AB
  * Copyright 2023 Simon D. Levy
@@ -16,17 +18,18 @@
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include <Arduino.h>
+#include <SPI.h>
 
-#include <stdint.h>
-#include <stddef.h>
+#include "pmw3901.hpp"
 
-void spi_begin(void * bus);
+class PMW3901_Arduino : public PMW3901 {
 
-void spi_begin_transaction(void * bus);
+    public:
 
-void spi_end_transaction(void * bus);
+        bool begin(const uint8_t csPin=10, SPIClass * bus=&SPI)
+        {
+            return PMW3901::begin(bus, csPin);
+        }
 
-void spi_write_value(void * bus, uint8_t value);
-
-void spi_read_buffer(void * bus, void * buffer, const size_t size);
+};
