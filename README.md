@@ -1,5 +1,5 @@
 <a href="https://www.bitcraze.io/products/flow-deck-v2/"><img src="media/flowdeckv2.jpg" height=300></a>
-<a href="https://www.tindie.com/products/onehorse/pmw3901-optical-flow-sensor/"><img src="media/pesky.jpg" height=300></a>
+<a href="https://www.tindie.com/products/onehorse/pmw3901-optical-flow-sensor/"><img src="media/pesky2.jpg" height=300></a>
 
 # Arduino driver for PMW3901 optical flow sensor
 
