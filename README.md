@@ -8,8 +8,9 @@ This library is based on on the C
 for the Crazyflie quadcopter from  Bitcraze.  Unlike the Bitcraze PMW3901 [ Arduino repository](https://github.com/bitcraze/Bitcraze_PMW3901), 
 this C driver provides a data structure that includes a flag for whether motion
 was detected, which may be useful to know for sensor fusion.  Hence my C++
-class returns this flag along with the delta-X and delta-Y motion values.  I
-made the following modifications to the C code:
+class returns this flag along with the delta-X and delta-Y motion values.  
+
+I made the following modifications to the C code:
 
 1. Header-only C++
 
