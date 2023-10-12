@@ -1,4 +1,4 @@
-<a href="https://www.bitcraze.io/products/flow-deck-v2/"><img src="media/flowdeckv2.jpg"></a>
+<a href="https://www.bitcraze.io/products/flow-deck-v2/"><img src="media/flowdeckv2.jpg" height=300></a>
 
 # Arduino driver for PMW3901 optical flow sensor
 
