@@ -9,15 +9,14 @@ for the [Crazyflie](https://www.bitcraze.io/products/crazyflie-2-1/)
  quadcopter from  Bitcraze.  Unlike the Bitcraze PMW3901 [ Arduino repository](https://github.com/bitcraze/Bitcraze_PMW3901), 
 their C driver provides a data structure that includes a flag for whether motion
 was detected, which may be useful to know for sensor fusion.  Hence my C++
-class returns this flag along with the delta-X and delta-Y motion values.  
+class returns this flag along with the delta-X and delta-Y motion values.  The class offers the
+following features:
 
-I made the following modifications to the C code:
+1. Uses header-only C++ for main class
 
-1. Header-only C++
-
-2. Support cross-platform development defining an 
+2. Supports cross-platform development defining an 
 [API](https://github.com/simondlevy/PMW3901/blob/master/src/spi_compat.h)
 of required methods for SPI communication
 
-3. Support different SPI buses (e.g., Arduino SPI1)
+3. Supports different SPI buses (e.g., Arduino SPI1)
 
