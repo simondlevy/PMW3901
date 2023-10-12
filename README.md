@@ -19,3 +19,5 @@ I made the following modifications to the C code:
 [API](https://github.com/simondlevy/PMW3901/blob/master/src/spi_compat.h)
 of required methods for SPI communication
 
+3. Support different SPI buses (e.g., Arduino SPI1)
+
