@@ -16,14 +16,18 @@
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "pmw3901_arduino.hpp"
+#include "pmw3901.hpp"
+
+#include <SPI.h>
 
 // Using digital pin 10 for chip select
-static PMW3901_Arduino sensor;
+static PMW3901 sensor;
 
 void setup() 
 {
     Serial.begin(115200);
+
+    SPI.begin();
 
     if (!sensor.begin()) {
 
@@ -40,7 +44,7 @@ void loop()
     int16_t deltaY = 0;
     bool gotMotion = false;
 
-    sensor.readMotion(&deltaX, &deltaY, &gotMotion); 
+    sensor.readMotion(10, deltaX, deltaY, gotMotion); 
 
     Serial.print("deltaX: ");
     Serial.print(deltaX);
