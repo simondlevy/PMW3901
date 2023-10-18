@@ -12,11 +12,8 @@ was detected, which may be useful to know for sensor fusion.  Hence my C++
 class returns this flag along with the delta-X and delta-Y motion values.  The class offers the
 following features:
 
-1. Uses header-only C++ for main class
+* Uses header-only C++ for main class
 
-2. Supports cross-platform development defining an 
-[API](https://github.com/simondlevy/PMW3901/blob/master/src/spi_compat.h)
-of required methods for SPI communication
-
-3. Supports different SPI buses (e.g., Arduino SPI1)
+* Supports cross-platform development via 
+[protected methods](https://github.com/simondlevy/PMW3901/blob/master/src/pmw3901.hpp#L108-L118)
 
