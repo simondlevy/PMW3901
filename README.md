@@ -12,7 +12,7 @@ was detected, which may be useful to know for sensor fusion.  Hence my C++
 class returns this flag along with the delta-X and delta-Y motion values.  The class offers the
 following features:
 
-* Uses header-only C++ for main class
+* Uses header-only C++ for main code
 
 * Supports cross-platform development via 
 [protected methods](https://github.com/simondlevy/PMW3901/blob/master/src/pmw3901.hpp#L108-L118)
