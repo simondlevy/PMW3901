@@ -44,7 +44,7 @@ void loop()
     int16_t deltaY = 0;
     bool gotMotion = false;
 
-    sensor.readMotion(10, deltaX, deltaY, gotMotion); 
+    sensor.readMotion(deltaX, deltaY, gotMotion); 
 
     Serial.print("deltaX: ");
     Serial.print(deltaX);

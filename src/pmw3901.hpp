@@ -27,6 +27,8 @@ class PMW3901 {
 
         bool begin(const uint8_t csPin=10)
         {
+            _csPin = csPin;
+
             bool retval = false;
 
             // Initialize CS Pin
@@ -72,13 +74,12 @@ class PMW3901 {
             return retval;
         }
 
-        void readMotion(const uint8_t csPin, 
-                int16_t & deltaX, int16_t &  deltaY, bool & gotMotion) 
+        void readMotion(int16_t & deltaX, int16_t &  deltaY, bool & gotMotion) 
         {
             uint8_t address = 0x16;
 
             spi_begin_transaction();
-            digitalWrite(csPin,LOW);
+            digitalWrite(_csPin,LOW);
             delayMicroseconds(50);
 
             spi_write_byte(address);
@@ -88,7 +89,7 @@ class PMW3901 {
             spi_read_buffer(sizeof(motionBurst_t), (uint8_t*)&_currentMotion);
 
             delayMicroseconds(50);
-            digitalWrite(csPin, HIGH);
+            digitalWrite(_csPin, HIGH);
 
             spi_end_transaction();
 
@@ -145,6 +146,8 @@ class PMW3901 {
         } __attribute__((packed)) motionBurst_t;
 
         motionBurst_t _currentMotion;
+
+        uint8_t _csPin;
 
         void registerWrite(const uint8_t csPin, uint8_t rgstr, uint8_t value)
         {
