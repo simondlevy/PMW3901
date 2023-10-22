@@ -46,8 +46,3 @@ void PMW3901::spi_read_buffer(size_t size, uint8_t * buffer)
 {
     SPI.transfer(buffer, size);
 }
-
-void PMW3901::spi_end_transaction(void)
-{
-    SPI.endTransaction();
-}

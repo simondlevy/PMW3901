@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include <SPI.h>
 
 /*
  * Copyright 2017 Bitcraze AB
@@ -91,7 +92,7 @@ class PMW3901 {
             delayMicroseconds(50);
             digitalWrite(_csPin, HIGH);
 
-            spi_end_transaction();
+            SPI.endTransaction();
 
             delayMicroseconds(50);
 
@@ -114,8 +115,6 @@ class PMW3901 {
         uint8_t spi_read_byte(void);
 
         void spi_read_buffer(size_t size, uint8_t * buffer);
-
-        void spi_end_transaction(void);
 
     private:
 
@@ -169,7 +168,7 @@ class PMW3901 {
 
             digitalWrite(csPin, HIGH);
 
-            spi_end_transaction();
+            SPI.endTransaction();
 
             delayMicroseconds(200);
         }
@@ -195,7 +194,7 @@ class PMW3901 {
 
             digitalWrite(csPin, HIGH);
 
-            spi_end_transaction();
+            SPI.endTransaction();
 
             delayMicroseconds(200);
 
