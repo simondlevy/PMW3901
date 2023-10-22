@@ -83,7 +83,7 @@ class PMW3901 {
             digitalWrite(_csPin,LOW);
             delayMicroseconds(50);
 
-            spi_write_byte(address);
+            writeByte(address);
 
             delayMicroseconds(50);
 
@@ -109,10 +109,6 @@ class PMW3901 {
     protected:
 
         void spi_begin_transaction(void);
-
-        void spi_write_byte(const uint8_t byte);
-
-        uint8_t spi_read_byte(void);
 
     private:
 
@@ -156,11 +152,11 @@ class PMW3901 {
 
             delayMicroseconds(50);
 
-            spi_write_byte(rgstr);
+            writeByte(rgstr);
 
             delayMicroseconds(50);
 
-            spi_write_byte(value);
+            writeByte(value);
 
             delayMicroseconds(50);
 
@@ -182,11 +178,11 @@ class PMW3901 {
 
             delayMicroseconds(50);
 
-            spi_write_byte(reg);
+            writeByte(reg);
 
             delayMicroseconds(500);
 
-            auto data = spi_read_byte();
+            auto data = readByte();
 
             delayMicroseconds(50);
 
@@ -283,4 +279,19 @@ class PMW3901 {
             registerWrite(csPin, 0x54, 0x00);
         }
 
+        void writeByte(const uint8_t byte)
+        {
+            uint8_t b = byte;
+
+            SPI.transfer(&b, 1);
+        }
+
+        uint8_t readByte(void)
+        {
+            uint8_t byte = 0;
+
+            SPI.transfer(&byte, 1);
+
+            return byte;
+        }
 };
