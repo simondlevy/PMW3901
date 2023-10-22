@@ -79,7 +79,7 @@ class PMW3901 {
         {
             uint8_t address = 0x16;
 
-            spi_begin_transaction();
+            beginTransaction();
             digitalWrite(_csPin,LOW);
             delayMicroseconds(50);
 
@@ -105,10 +105,6 @@ class PMW3901 {
 
             gotMotion = _currentMotion.motion == 0XB0;
         }
-
-    protected:
-
-        void spi_begin_transaction(void);
 
     private:
 
@@ -147,7 +143,7 @@ class PMW3901 {
             // Set MSB to 1 for write
             rgstr |= 0x80u;
 
-            spi_begin_transaction();
+            beginTransaction();
             digitalWrite(csPin, LOW);
 
             delayMicroseconds(50);
@@ -172,7 +168,7 @@ class PMW3901 {
             // Set MSB to 0 for read
             uint8_t reg = rgstr & ~0x80u;
 
-            spi_begin_transaction();
+            beginTransaction();
 
             digitalWrite(csPin, LOW);
 
@@ -277,6 +273,11 @@ class PMW3901 {
             registerWrite(csPin, 0x7F, 0x00);
             registerWrite(csPin, 0x5A, 0x10);
             registerWrite(csPin, 0x54, 0x00);
+        }
+
+        void beginTransaction(void)
+        {
+            SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
         }
 
         void writeByte(const uint8_t byte)
