@@ -23,8 +23,7 @@
 
 void PMW3901::spi_begin_transaction(void)
 {
-    SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
-
+    SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
 }
 
 void PMW3901::spi_write_byte(const uint8_t byte)
