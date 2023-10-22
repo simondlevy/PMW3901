@@ -41,8 +41,3 @@ uint8_t PMW3901::spi_read_byte(void)
 
     return byte;
 }
-
-void PMW3901::spi_read_buffer(size_t size, uint8_t * buffer)
-{
-    SPI.transfer(buffer, size);
-}

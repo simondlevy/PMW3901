@@ -87,7 +87,7 @@ class PMW3901 {
 
             delayMicroseconds(50);
 
-            spi_read_buffer(sizeof(motionBurst_t), (uint8_t*)&_currentMotion);
+            SPI.transfer((uint8_t*)&_currentMotion, sizeof(motionBurst_t));
 
             delayMicroseconds(50);
             digitalWrite(_csPin, HIGH);
@@ -113,8 +113,6 @@ class PMW3901 {
         void spi_write_byte(const uint8_t byte);
 
         uint8_t spi_read_byte(void);
-
-        void spi_read_buffer(size_t size, uint8_t * buffer);
 
     private:
 
