@@ -1,11 +1,10 @@
 #pragma once
 
-#include <Arduino.h>
-#include <SPI.h>
-
 /*
+ * Arduino library for PMW3901 optical flow sensor
+ *
  * Copyright 2017 Bitcraze AB
- * Copyright 2023 Simon D. Levy
+ * Copyright 2024 Simon D. Levy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,11 +21,17 @@
  */
 
 
+#include <Arduino.h>
+#include <SPI.h>
+
 class PMW3901 {
 
     public:
 
-        bool begin(const uint8_t csPin=10)
+        /**
+         *  Starts the sensor on a specified pin (default = SS)
+         */
+        bool begin(const uint8_t csPin=SS)
         {
             _csPin = csPin;
 
@@ -75,6 +80,10 @@ class PMW3901 {
             return retval;
         }
 
+        /**
+         *  Reads the current deltaX, deltaY values from the sensor.
+         *  @return true if motion was detected, false otherwise
+         */
         bool readMotion(int16_t & deltaX, int16_t &  deltaY) 
         {
             uint8_t address = 0x16;
