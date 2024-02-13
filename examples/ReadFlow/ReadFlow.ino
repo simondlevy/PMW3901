@@ -20,7 +20,6 @@
 
 #include <SPI.h>
 
-// Using digital pin 10 for chip select
 static PMW3901 sensor;
 
 void setup() 
