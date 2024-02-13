@@ -75,7 +75,7 @@ class PMW3901 {
             return retval;
         }
 
-        void readMotion(int16_t & deltaX, int16_t &  deltaY, bool & gotMotion) 
+        bool readMotion(int16_t & deltaX, int16_t &  deltaY) 
         {
             uint8_t address = 0x16;
 
@@ -103,7 +103,7 @@ class PMW3901 {
             deltaX = _currentMotion.deltaX;
             deltaY = _currentMotion.deltaY;
 
-            gotMotion = _currentMotion.motion == 0XB0;
+            return _currentMotion.motion == 0XB0;
         }
 
     private:

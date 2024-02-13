@@ -1,6 +1,7 @@
 /*
- * Copyright 2017 Bitcraze AB
- * Copyright 2023 Simon D. Levy
+ * Interrupt-based reading for PMW3901 optical flow sensor
+ *
+ * Copyright 2024 Simon D. Levy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,9 +23,21 @@
 
 static PMW3901 sensor;
 
+static const uint8_t INTERRUPT_PIN = 9;
+
+static volatile bool gotInterrupt;
+
+static void interruptHandler(void)
+{
+    gotInterrupt = true;
+}
+
 void setup() 
 {
     Serial.begin(115200);
+
+    attachInterrupt(
+        digitalPinToInterrupt(INTERRUPT_PIN), interruptHandler, FALLING);
 
     SPI.begin();
 
@@ -39,18 +52,19 @@ void setup()
 
 void loop() 
 {
-    int16_t deltaX = 0;
-    int16_t deltaY = 0;
-    bool gotMotion = false;
+    if (gotInterrupt) {
 
-    sensor.readMotion(deltaX, deltaY, gotMotion); 
+        gotInterrupt = false;
 
-    Serial.print("deltaX: ");
-    Serial.print(deltaX);
-    Serial.print(",\tdeltaY: ");
-    Serial.print(deltaY);
-    Serial.print(",\tgotMotion: ");
-    Serial.println(gotMotion ? "yes" : "no");
+        int16_t deltaX = 0;
+        int16_t deltaY = 0;
 
-    delay(100);
+        sensor.readMotion(deltaX, deltaY); 
+
+        Serial.print("deltaX: ");
+        Serial.print(deltaX);
+        Serial.print(",\tdeltaY: ");
+        Serial.println(deltaY);
+
+    }
 }
