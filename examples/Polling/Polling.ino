@@ -17,7 +17,7 @@
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "pmw3901.hpp"
+#include <pmw3901.hpp>
 
 #include <SPI.h>
 
@@ -29,7 +29,7 @@ void setup()
 
     SPI.begin();
 
-    if (!sensor.begin()) {
+    if (!sensor.begin(SS)) {
 
         while(true) { 
             Serial.println("Initialization of the flow sensor failed");

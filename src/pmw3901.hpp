@@ -29,9 +29,9 @@ class PMW3901 {
     public:
 
         /**
-         *  Starts the sensor on a specified pin (default = SS)
+         *  Starts the sensor on a specified pin
          */
-        bool begin(const uint8_t csPin=SS)
+        bool begin(const uint8_t csPin)
         {
             _csPin = csPin;
 
