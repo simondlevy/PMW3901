@@ -6,7 +6,11 @@
 This header-only Arduino library is based on on the C 
 [driver code](https://github.com/bitcraze/crazyflie-firmware/blob/9343aa686600aa5f04beb43549c81bdfda1f9cb8/src/drivers/src/pmw3901.c#L218)
 for the [Crazyflie](https://www.bitcraze.io/products/crazyflie-2-1/)
- quadcopter from  Bitcraze.  Unlike the Bitcraze PMW3901 [ Arduino repository](https://github.com/bitcraze/Bitcraze_PMW3901), 
+ quadcopter from  Bitcraze.  It differs in the following ways:
+
+* Unlike the Bitcraze PMW3901 [ Arduino repository](https://github.com/bitcraze/Bitcraze_PMW3901), 
 their C driver provides a data structure that includes a flag for whether motion
 was detected, which may be useful to know for sensor fusion.  Hence my C++
 class returns this flag along with the delta-X and delta-Y motion values.
+
+* Supports different SPI buses (SPI, SPI1, etc.)

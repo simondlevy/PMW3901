@@ -31,8 +31,9 @@ class PMW3901 {
         /**
          *  Starts the sensor on a specified pin
          */
-        bool begin(const uint8_t csPin)
+        bool begin(SPIClass * spi=&SPI, const uint8_t csPin=SS)
         {
+            _spi = spi;
             _csPin = csPin;
 
             bool retval = false;
@@ -96,12 +97,12 @@ class PMW3901 {
 
             delayMicroseconds(50);
 
-            SPI.transfer((uint8_t*)&_currentMotion, sizeof(motionBurst_t));
+            _spi->transfer((uint8_t*)&_currentMotion, sizeof(motionBurst_t));
 
             delayMicroseconds(50);
             digitalWrite(_csPin, HIGH);
 
-            SPI.endTransaction();
+            _spi->endTransaction();
 
             delayMicroseconds(50);
 
@@ -145,6 +146,8 @@ class PMW3901 {
 
         motionBurst_t _currentMotion;
 
+        SPIClass * _spi;
+
         uint8_t _csPin;
 
         void registerWrite(const uint8_t csPin, uint8_t rgstr, uint8_t value)
@@ -167,7 +170,7 @@ class PMW3901 {
 
             digitalWrite(csPin, HIGH);
 
-            SPI.endTransaction();
+            _spi->endTransaction();
 
             delayMicroseconds(200);
         }
@@ -193,7 +196,7 @@ class PMW3901 {
 
             digitalWrite(csPin, HIGH);
 
-            SPI.endTransaction();
+            _spi->endTransaction();
 
             delayMicroseconds(200);
 
@@ -286,21 +289,21 @@ class PMW3901 {
 
         void beginTransaction(void)
         {
-            SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
+            _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
         }
 
         void writeByte(const uint8_t byte)
         {
             uint8_t b = byte;
 
-            SPI.transfer(&b, 1);
+            _spi->transfer(&b, 1);
         }
 
         uint8_t readByte(void)
         {
             uint8_t byte = 0;
 
-            SPI.transfer(&byte, 1);
+            _spi->transfer(&byte, 1);
 
             return byte;
         }
