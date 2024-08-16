@@ -27,9 +27,9 @@ void setup()
 {
     Serial.begin(115200);
 
-    SPI.begin();
+    SPI1.begin();
 
-    if (!sensor.begin()) {
+    if (!sensor.begin(SPI1, 0)) {
 
         while(true) { 
             Serial.println("Initialization of the flow sensor failed");
@@ -44,7 +44,7 @@ void loop()
     int16_t deltaY = 0;
     bool gotMotion = false;
 
-    sensor.readMotion(10, deltaX, deltaY, gotMotion); 
+    sensor.readMotion(deltaX, deltaY, gotMotion); 
 
     Serial.print("deltaX: ");
     Serial.print(deltaX);

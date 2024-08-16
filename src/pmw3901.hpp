@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
+#include <SPI.h>
 
 /*
  * Copyright 2017 Bitcraze AB
@@ -25,8 +25,11 @@ class PMW3901 {
 
     public:
 
-        bool begin(const uint8_t csPin=10)
+        bool begin(SPIClass & spi=SPI, const uint8_t csPin=10)
         {
+            _spi = &spi;
+            _csPin = csPin;
+
             bool retval = false;
 
             // Initialize CS Pin
@@ -72,13 +75,12 @@ class PMW3901 {
             return retval;
         }
 
-        void readMotion(const uint8_t csPin, 
-                int16_t & deltaX, int16_t &  deltaY, bool & gotMotion) 
+        void readMotion(int16_t & deltaX, int16_t &  deltaY, bool & gotMotion) 
         {
             uint8_t address = 0x16;
 
             spi_begin_transaction();
-            digitalWrite(csPin,LOW);
+            digitalWrite(_csPin,LOW);
             delayMicroseconds(50);
 
             spi_write_byte(address);
@@ -88,7 +90,7 @@ class PMW3901 {
             spi_read_buffer(sizeof(motionBurst_t), (uint8_t*)&_currentMotion);
 
             delayMicroseconds(50);
-            digitalWrite(csPin, HIGH);
+            digitalWrite(_csPin, HIGH);
 
             spi_end_transaction();
 
@@ -103,18 +105,6 @@ class PMW3901 {
 
             gotMotion = _currentMotion.motion == 0XB0;
         }
-
-    protected:
-
-        void spi_begin_transaction(void);
-
-        void spi_write_byte(const uint8_t byte);
-
-        uint8_t spi_read_byte(void);
-
-        void spi_read_buffer(size_t size, uint8_t * buffer);
-
-        void spi_end_transaction(void);
 
     private:
 
@@ -143,6 +133,10 @@ class PMW3901 {
 
             uint16_t shutter;
         } __attribute__((packed)) motionBurst_t;
+
+        SPIClass * _spi;
+
+        uint8_t _csPin;
 
         motionBurst_t _currentMotion;
 
@@ -283,4 +277,35 @@ class PMW3901 {
             registerWrite(csPin, 0x54, 0x00);
         }
 
+        void spi_begin_transaction(void)
+        {
+            _spi->beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE3));
+
+        }
+
+        void spi_write_byte(const uint8_t byte)
+        {
+            uint8_t b = byte;
+
+            _spi->transfer(&b, 1);
+        }
+
+        uint8_t spi_read_byte(void)
+        {
+            uint8_t byte = 0;
+
+            _spi->transfer(&byte, 1);
+
+            return byte;
+        }
+
+        void spi_read_buffer(size_t size, uint8_t * buffer)
+        {
+            _spi->transfer(buffer, size);
+        }
+
+        void spi_end_transaction(void)
+        {
+            _spi->endTransaction();
+        }
 };
