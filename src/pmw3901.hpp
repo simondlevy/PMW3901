@@ -25,6 +25,12 @@ class PMW3901 {
 
     public:
 
+        // Number of pixels in both directions
+        static const uint8_t PIXELS = 35;
+
+        // Angle of aperture in degrees
+        static constexpr float ANGLE = 42;
+
         bool begin(const uint8_t csPin=10)
         {
             bool retval = false;
