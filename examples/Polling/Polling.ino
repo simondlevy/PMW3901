@@ -27,9 +27,10 @@ void setup()
 {
     Serial.begin(115200);
 
-    SPI1.begin();
+    SPI.begin();
 
-    if (!sensor.begin(SPI1, 0)) {
+    // if (!sensor.begin(SPI1, 0)) {
+    if (!sensor.begin()) {
 
         while(true) { 
             Serial.println("Initialization of the flow sensor failed");
