@@ -76,56 +76,6 @@ class PMW3901 {
             return retval;
         }
 
-        bool begin(SPIClass & spi=SPI, const uint8_t csPin=10)
-        {
-            _spi = &spi;
-            _csPin = csPin;
-
-            bool retval = false;
-
-            // Initialize CS Pin
-            pinMode(csPin, OUTPUT);
-            digitalWrite(csPin, HIGH);
-
-            delayMicroseconds(40000);
-
-            digitalWrite(csPin, HIGH);
-
-            delayMicroseconds(20000);
-
-            digitalWrite(csPin, LOW);
-
-            delayMicroseconds(20000);
-
-            digitalWrite(csPin, HIGH);
-
-            delayMicroseconds(20000);
-
-            uint8_t chipId    = registerRead(csPin, 0x00);
-            uint8_t invChipId = registerRead(csPin, 0x5f);
-
-            if (chipId == 0x49 && invChipId == 0xB6)
-            {
-                // Power on reset
-                registerWrite(csPin, 0x3a, 0x5a);
-                delayMicroseconds(5000);
-
-                // Reading the motion registers one time
-                registerRead(csPin, 0x02);
-                registerRead(csPin, 0x03);
-                registerRead(csPin, 0x04);
-                registerRead(csPin, 0x05);
-                registerRead(csPin, 0x06);
-                delayMicroseconds(1000);
-
-                initRegisters(csPin);
-
-                retval = true;
-            }
-
-            return retval;
-        }
-
         void readMotion(int16_t & deltaX, int16_t &  deltaY, bool & gotMotion) 
         {
             uint8_t address = 0x16;
