@@ -157,6 +157,13 @@ class PMW3901 {
             gotMotion = _currentMotion.motion == 0XB0;
         }
 
+        void readMotion(int16_t & deltaX, int16_t &  deltaY) 
+        {
+            bool gotMotion = false;
+
+            readMotion(deltaX, deltaY, gotMotion);
+        }
+
     private:
 
         typedef struct motionBurst_s {
