@@ -2,18 +2,18 @@ SKETCH = Interrupts
 
 PORT = /dev/ttyACM0
 
-BOARD = teensy:avr:teensy40
+FQBN = teensy:avr:teensy40
 
 LIBS = ../..
 
 build: $(SKETCH).ino 
-	arduino-cli compile  --libraries $(LIBS) --fqbn $(BOARD) $(SKETCH).ino
+	arduino-cli compile  --libraries $(LIBS) --fqbn $(FQBN) $(SKETCH).ino
 
 flash:
-	arduino-cli upload -p $(PORT) --fqbn $(BOARD) .
+	arduino-cli upload -p $(PORT) --fqbn $(FQBN) .
 
 upload:
-	arduino-cli upload -p $(PORT) --fqbn $(BOARD) .
+	arduino-cli upload -p $(PORT) --fqbn $(FQBN) .
 
 edit:
 	vim $(SKETCH).ino

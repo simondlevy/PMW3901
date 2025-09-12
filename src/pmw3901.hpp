@@ -1,11 +1,7 @@
 #pragma once
 
-#include <Arduino.h>
-#include <SPI.h>
-
 /*
- * Copyright 2017 Bitcraze AB
- * Copyright 2023 Simon D. Levy
+ * Copyright (C) 2017 Bitcraze AB, 2023 Simon D. Levy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,62 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <Arduino.h>
+#include <SPI.h>
 
 class PMW3901 {
 
     public:
 
-        bool begin(const uint8_t csPin=10, SPIClass & spi=SPI)
-        {
-            _spi = &spi;
-            _csPin = csPin;
-
-            bool retval = false;
-
-            // Initialize CS Pin
-            pinMode(csPin, OUTPUT);
-            digitalWrite(csPin, HIGH);
-
-            delayMicroseconds(40000);
-
-            digitalWrite(csPin, HIGH);
-
-            delayMicroseconds(20000);
-
-            digitalWrite(csPin, LOW);
-
-            delayMicroseconds(20000);
-
-            digitalWrite(csPin, HIGH);
-
-            delayMicroseconds(20000);
-
-            uint8_t chipId    = registerRead(csPin, 0x00);
-            uint8_t invChipId = registerRead(csPin, 0x5f);
-
-            if (chipId == 0x49 && invChipId == 0xB6)
-            {
-                // Power on reset
-                registerWrite(csPin, 0x3a, 0x5a);
-                delayMicroseconds(5000);
-
-                // Reading the motion registers one time
-                registerRead(csPin, 0x02);
-                registerRead(csPin, 0x03);
-                registerRead(csPin, 0x04);
-                registerRead(csPin, 0x05);
-                registerRead(csPin, 0x06);
-                delayMicroseconds(1000);
-
-                initRegisters(csPin);
-
-                retval = true;
-            }
-
-            return retval;
-        }
-
-        bool begin(SPIClass & spi=SPI, const uint8_t csPin=10)
+        bool begin(const uint8_t csPin=SS, SPIClass & spi=SPI)
         {
             _spi = &spi;
             _csPin = csPin;

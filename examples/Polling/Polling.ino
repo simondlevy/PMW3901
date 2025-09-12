@@ -29,7 +29,6 @@ void setup()
 
     SPI.begin();
 
-    // if (!sensor.begin(SPI1, 0)) {
     if (!sensor.begin()) {
 
         while(true) { 
