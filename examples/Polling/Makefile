@@ -2,8 +2,8 @@ SKETCH = Polling
 
 PORT = /dev/ttyACM0
 
-# FQBN = teensy:avr:teensy40
-FQBN = esp32:esp32:um_tinypico
+FQBN = teensy:avr:teensy40
+# FQBN = esp32:esp32:um_tinypico
 
 LIBS = ../..
 

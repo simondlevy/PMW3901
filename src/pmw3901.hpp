@@ -20,6 +20,10 @@
 #include <Arduino.h>
 #include <SPI.h>
 
+#if !defined(ARDUINO)
+static const uint8_t SS = 0;
+#endif
+
 class PMW3901 {
 
     public:
