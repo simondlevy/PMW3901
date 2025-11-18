@@ -1,4 +1,4 @@
-SKETCH = Interrupts
+SKETCH = $(shell basename "`pwd`")
 
 PORT = /dev/ttyACM0
 
